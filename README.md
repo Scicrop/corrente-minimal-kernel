@@ -26,8 +26,8 @@ node_01 = core.Node(unique_id = 1, payload = {'product':'corn','ammount':1500})
 ##  teste de atributos e métodos
 print(node_01.unique_id)
 1
-print(node_01.payload)
 
+print(node_01.payload)
 {'product': 'corn', 'ammount': 1500}
 
 print(node_01.hash_chain__object)
