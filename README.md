@@ -13,7 +13,7 @@
 | unique_id | inteiro positivo                       | ID único do participante (exemplo: número do pedido) |
 | payload   | dicionário do Python (similar ao JSON) | dados do que está sendo representado neste nó (exmeplo: descrição do produto e quantidade) |
 
-##### Exemplo de utilização
+##### Exemplo de utilização da API
 
 ```python
 # importação da classe diretamente do módulo
@@ -60,12 +60,18 @@ node_01.process_signature()
 # acesso à assinatura digital no formato BASE58
 print( node_01.signature__object.base58() )
 b'NEUcmd7kK5KwbgvvtqkWQQBF8fE8UArRpQmcKzfPmo5e'
+```
 
+##### Formatos de serialização do nó
 
-## formatos de serialização do nó
+###### Dicionário do Python
 
-# dicionário do Python - preferível para API interna em Python
-pprint( node_01.export_to_python_dict(), width=180 )                                                                                            
+Preferível para API interna em Python.
+
+```python
+node_01.export_to_python_dict()
+```
+```python
 {'attachments': [],
  'extra_hash': None,
  'hash_chain': b'\x01\x81\r\xb0:\xe1\x89\x9beI\xbb\x81\\\xc4F\xbay\xfa5\x0f,\xb6P\x96\x00\xf1\xf1\xd3T\x89hB[',
@@ -73,10 +79,16 @@ pprint( node_01.export_to_python_dict(), width=180 )
  'signature': b'\x01;y3\xc9+\xaf\xbd\xdf\xf75\xe9\xee\x88\xee\xb1\xbd\xeeL\xd0\xbe\xa82\x896\x81\x97\xb5 \x13\x87\xa1\xc5',
  'timestamp': '2018-11-16T18:59:37.399346+00:00',
  'unique_id': 1}
+```
 
+###### JSON
 
-# JSON - preferível para API Web e comunicação inter-processos
-print( node_01.export_to_json() )
+Preferível para API Web e comunicação inter-processos
+
+```python
+node_01.export_to_json()
+```
+```json
 {
     "timestamp": "2018-11-16T18:59:37.399346+00:00",
     "unique_id": 1,
@@ -89,10 +101,16 @@ print( node_01.export_to_json() )
     "hash_chain": "AYENsDrhiZtlSbuBXMRGunn6NQ8stlCWAPHx01SJaEJb",
     "signature": "ATt5M8krr73f9zXp7ojusb3uTNC+qDKJNoGXtSATh6HF"
 }
+```
 
+###### Arquivo simples
 
-# flat file (arquivo comum) - preferível para persistência em outras mídias como arquivos .TXT
-print( node_01.export_to_flat_file().decode('utf-8') )                                                                                          
+Preferível para persistência em outras mídias como arquivo de texto (TXT).
+
+```python
+node_01.export_to_flat_file()
+```
+```http
 Content-Type: multipart/mixed; boundary="===============5719640193586445364=="
 MIME-Version: 1.0
 
@@ -104,14 +122,13 @@ hash_chain: 01810DB03AE1899B6549BB815CC446BA79FA350F2CB6509600F1F1D3548968425B
 --===============5719640193586445364==
 Content-Type: application/octet-stream; description="payload"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 
 {
     "product": "corn",
     "ammount": 1500
 }
 --===============5719640193586445364==--
-
 ```
 
 ### Nó (node) de regsitro de transação da Blockchain
