@@ -62,26 +62,26 @@ def test_data_object():
     assert d3.hash().hash_data == b"\xa4\xb9\xcf\xae}\xbf\x01L\x10\xb4W~g\x96\x83\xe2N\xb5'v;\x91\xcb\x80&\xf2F\xa2\x1d\x93\xffD"
     
 def test_node():
-    n1 = core.Node(1, {'product':'corn','ammount':1500})
+    node_01 = core.Node(unique_id=1, payload={'product':'corn','ammount':1500})
     
-    assert n1.to_json() == '{"timestamp": null, "unique_id": 1, "payload": {"product": "corn", "ammount": 1500}, "attachments": [], "extra_hash": null, "hash_chain": null, "signature": null}'
+    assert node_01.export_to_json() == '{"timestamp": null, "unique_id": 1, "payload": {"product": "corn", "ammount": 1500}, "attachments": [], "extra_hash": null, "hash_chain": null, "signature": null}'
     
     with freeze_time(datetime(2018,6,1,1,23, tzinfo=timezone.utc)):
         assert datetime.now(timezone.utc) == datetime(2018,6,1,1,23, tzinfo=timezone.utc)
-        n1_hash_chain = n1.hash_chain()
+        n1_hash_chain = node_01.process_hash_chain()
     
     assert n1_hash_chain.make_playload() == b"\x01\x12A\x1d\xf5DB*}\\\xc3%\x05)&\x8d\x0c!V[\xc3T\x8fz\xfe\xa3\x9c\xa6\x1b'($\x01"
     
-    assert n1.to_json() == '{"timestamp": "2018-06-01T01:23:00.000000+00:00", "unique_id": 1, "payload": {"product": "corn", "ammount": 1500}, "attachments": [], "extra_hash": null, "hash_chain": "ARJBHfVEQip9XMMlBSkmjQwhVlvDVI96/qOcphsnKCQB", "signature": null}'
+    assert node_01.export_to_json() == '{"timestamp": "2018-06-01T01:23:00.000000+00:00", "unique_id": 1, "payload": {"product": "corn", "ammount": 1500}, "attachments": [], "extra_hash": null, "hash_chain": "ARJBHfVEQip9XMMlBSkmjQwhVlvDVI96/qOcphsnKCQB", "signature": null}'
     
-    n1.sign_data(method='sha256')
+    node_01.process_signature(method='sha256')
     
-    assert n1.to_json() == '{"timestamp": "2018-06-01T01:23:00.000000+00:00", "unique_id": 1, "payload": {"product": "corn", "ammount": 1500}, "attachments": [], "extra_hash": null, "hash_chain": "ARJBHfVEQip9XMMlBSkmjQwhVlvDVI96/qOcphsnKCQB", "signature": "ATIwMTgtMDYtMDFUMDE6MjM6MDAuMDAwMDAwKzAwOjAwMTE="}'
+    assert node_01.export_to_json() == '{"timestamp": "2018-06-01T01:23:00.000000+00:00", "unique_id": 1, "payload": {"product": "corn", "ammount": 1500}, "attachments": [], "extra_hash": null, "hash_chain": "ARJBHfVEQip9XMMlBSkmjQwhVlvDVI96/qOcphsnKCQB", "signature": "ATIwMTgtMDYtMDFUMDE6MjM6MDAuMDAwMDAwKzAwOjAwMTE="}'
     
-    # email.mime.multipart.MIMEMultipart mocking
+    # email.mime.multipart.MIMEMultipart mocking for repeatable testing
     core.MIMEMultipart = partial(core.MIMEMultipart, boundary='===============3353248956693792728==')
-    # print(n1.to_flat_file().decode('utf-8'))
-    assert n1.to_flat_file().decode('utf-8') == '''Content-Type: multipart/mixed; boundary="===============3353248956693792728=="
+    
+    assert node_01.export_to_flat_file().decode('utf-8') == '''Content-Type: multipart/mixed; boundary="===============3353248956693792728=="
 MIME-Version: 1.0
 
 --===============3353248956693792728==

@@ -99,9 +99,9 @@ class Node:
         # processed data
         self.timestamp = None
         self.hash_chain__object = None
-        self.signature = None
+        self.signature__object = None
     
-    def hash_chain(self):
+    def process_hash_chain(self):
         utc_now = datetime.now(timezone.utc)
         timestamp = TimeDateObject(utc_now).hash().make_playload()
         unique_id = IntegerObject(self.unique_id).hash().make_playload()
@@ -125,9 +125,9 @@ class Node:
         self.hash_chain__object = hash_chain__object
         return hash_chain__object
     
-    def sign_data(self, method='sha256'): # TODO: private_key
+    def process_signature(self, method='sha256'): # TODO: private_key
         assert self.timestamp
-        assert not self.signature
+        assert not self.signature__object
         timestamp = TimeDateObject(self.timestamp).serialize()
         unique_id = IntegerObject(self.unique_id).serialize()
         payload = JsonObject(self.unique_id).serialize()
@@ -143,10 +143,10 @@ class Node:
         hash_set = (timestamp, unique_id, payload, attachments, extra_hash)
         bytes_joined = b''.join(hash_set)
         
-        self.signature = HashObject(bytes_joined, method)
-        return self.signature
+        self.signature__object = HashObject(bytes_joined, method)
+        return self.signature__object
     
-    def to_dict(self, to_json=False):
+    def export_to_python_dict(self, to_json=False):
         if self.timestamp:
             timestamp = self.timestamp.isoformat(timespec='microseconds')
         else:
@@ -160,11 +160,11 @@ class Node:
         else:
             hash_chain = None
             
-        if self.signature:
+        if self.signature__object:
             if to_json:
-                signature = self.signature.base64().decode('ascii')
+                signature = self.signature__object.base64().decode('ascii')
             else:
-                signature = self.signature.make_playload()
+                signature = self.signature__object.make_playload()
         else:
             signature = None
         
@@ -178,10 +178,10 @@ class Node:
             'signature':   signature,
         }
     
-    def to_json(self):
-        return json.dumps(self.to_dict(to_json=True))
+    def export_to_json(self):
+        return json.dumps(self.export_to_python_dict(to_json=True))
     
-    def to_flat_file(self):
+    def export_to_flat_file(self):
         msg = EmailMessage()
         # timestamp
         if self.timestamp:
