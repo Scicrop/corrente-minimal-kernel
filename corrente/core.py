@@ -6,6 +6,7 @@ from email.message import EmailMessage
 from email.encoders import encode_7or8bit
 from email.mime.multipart import MIMEMultipart
 from email.mime.application import MIMEApplication
+from typing import Dict, Tuple, List
 
 # import base32_crockford
 import base58
@@ -18,7 +19,7 @@ class HashObject:
     hash_table = { # :-P
         'sha256': b'\x01',
     }
-    def __init__(self, hash_data, hash_name='sha256'):
+    def __init__(self, hash_data: bytes, hash_name: str = 'sha256'):
         self.hash_data = hash_data
         self.hash_name = hash_name
     
@@ -47,10 +48,12 @@ class HashObject:
         '''Base64 encoding of the versioned and serialized format'''
         return base64.b85encode(self.make_playload())
     
+    def __repr__(self):
+        return 'corrente.core.HashObject({!r}, {!r})'.format(self.hash_data, self.hash_name)
 
 
 class DataObject:
-    def __init__(self, data, salt=b''):
+    def __init__(self, data: Dict, salt: bytes = b''):
         self.data = data # dict to be converted to a minimal json
         self.salt = salt # bytes to be joined to serialized data before hashing
     
@@ -90,7 +93,12 @@ class JsonObject(DataObject):
 
 
 class Node:
-    def __init__(self, unique_id, payload, attachments=None, extra_hash=None):
+    def __init__(self, 
+            unique_id: int,
+            payload: Dict,
+            attachments: List = None,
+            extra_hash: bytes = None
+        ):
         # data
         self.unique_id = unique_id
         self.payload = payload
@@ -125,7 +133,7 @@ class Node:
         self.hash_chain__object = hash_chain__object
         return hash_chain__object
     
-    def process_signature(self, method='sha256'): # TODO: private_key
+    def process_signature(self, method: str = 'sha256'): # TODO: private_key
         assert self.timestamp
         assert not self.signature__object
         timestamp = TimeDateObject(self.timestamp).serialize()
@@ -143,10 +151,12 @@ class Node:
         hash_set = (timestamp, unique_id, payload, attachments, extra_hash)
         bytes_joined = b''.join(hash_set)
         
-        self.signature__object = HashObject(bytes_joined, method)
+        data_object = DataObject(bytes_joined)
+        self.signature__object = data_object.hash()
+        
         return self.signature__object
     
-    def export_to_python_dict(self, to_json=False):
+    def export_to_python_dict(self, to_json: bool = False):
         if self.timestamp:
             timestamp = self.timestamp.isoformat(timespec='microseconds')
         else:
@@ -178,8 +188,11 @@ class Node:
             'signature':   signature,
         }
     
-    def export_to_json(self):
-        return json.dumps(self.export_to_python_dict(to_json=True))
+    def export_to_json(self, indent = 4):
+        return json.dumps(
+            self.export_to_python_dict(to_json=True),
+            indent = indent,
+        )
     
     def export_to_flat_file(self):
         msg = EmailMessage()
@@ -199,7 +212,7 @@ class Node:
         mult = MIMEMultipart()
         mult.attach(msg)
         # payload
-        payload = '{"x":"ç"}'.encode('utf-8')
+        payload = json.dumps(self.payload, indent=4)
         mult.attach(MIMEApplication(payload, _encoder=encode_7or8bit, description='payload'))
         # attachments
         for attachment in self.attachments:

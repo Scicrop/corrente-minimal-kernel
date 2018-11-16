@@ -64,7 +64,7 @@ def test_data_object():
 def test_node():
     node_01 = core.Node(unique_id=1, payload={'product':'corn','ammount':1500})
     
-    assert node_01.export_to_json() == '{"timestamp": null, "unique_id": 1, "payload": {"product": "corn", "ammount": 1500}, "attachments": [], "extra_hash": null, "hash_chain": null, "signature": null}'
+    assert node_01.export_to_json(indent=None) == '{"timestamp": null, "unique_id": 1, "payload": {"product": "corn", "ammount": 1500}, "attachments": [], "extra_hash": null, "hash_chain": null, "signature": null}'
     
     with freeze_time(datetime(2018,6,1,1,23, tzinfo=timezone.utc)):
         assert datetime.now(timezone.utc) == datetime(2018,6,1,1,23, tzinfo=timezone.utc)
@@ -72,11 +72,11 @@ def test_node():
     
     assert n1_hash_chain.make_playload() == b"\x01\x12A\x1d\xf5DB*}\\\xc3%\x05)&\x8d\x0c!V[\xc3T\x8fz\xfe\xa3\x9c\xa6\x1b'($\x01"
     
-    assert node_01.export_to_json() == '{"timestamp": "2018-06-01T01:23:00.000000+00:00", "unique_id": 1, "payload": {"product": "corn", "ammount": 1500}, "attachments": [], "extra_hash": null, "hash_chain": "ARJBHfVEQip9XMMlBSkmjQwhVlvDVI96/qOcphsnKCQB", "signature": null}'
+    assert node_01.export_to_json(indent=None) == '{"timestamp": "2018-06-01T01:23:00.000000+00:00", "unique_id": 1, "payload": {"product": "corn", "ammount": 1500}, "attachments": [], "extra_hash": null, "hash_chain": "ARJBHfVEQip9XMMlBSkmjQwhVlvDVI96/qOcphsnKCQB", "signature": null}'
     
     node_01.process_signature(method='sha256')
     
-    assert node_01.export_to_json() == '{"timestamp": "2018-06-01T01:23:00.000000+00:00", "unique_id": 1, "payload": {"product": "corn", "ammount": 1500}, "attachments": [], "extra_hash": null, "hash_chain": "ARJBHfVEQip9XMMlBSkmjQwhVlvDVI96/qOcphsnKCQB", "signature": "ATIwMTgtMDYtMDFUMDE6MjM6MDAuMDAwMDAwKzAwOjAwMTE="}'
+    assert node_01.export_to_json(indent=None) == '{"timestamp": "2018-06-01T01:23:00.000000+00:00", "unique_id": 1, "payload": {"product": "corn", "ammount": 1500}, "attachments": [], "extra_hash": null, "hash_chain": "ARJBHfVEQip9XMMlBSkmjQwhVlvDVI96/qOcphsnKCQB", "signature": "AbsRUaj4aRE4AdY1zqg50Fn0ccqs1qmIVTv3MLIDoxgl"}'
     
     # email.mime.multipart.MIMEMultipart mocking for repeatable testing
     core.MIMEMultipart = partial(core.MIMEMultipart, boundary='===============3353248956693792728==')
@@ -92,9 +92,12 @@ hash_chain: 0112411DF544422A7D5CC3250529268D0C21565BC3548F7AFEA39CA61B27282401
 --===============3353248956693792728==
 Content-Type: application/octet-stream; description="payload"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 
-{"x":"ç"}
+{
+    "product": "corn",
+    "ammount": 1500
+}
 --===============3353248956693792728==--
 '''
     
