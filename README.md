@@ -6,7 +6,7 @@
 
 #### Criação e carga inical de dados
 
-##### Classe `core.Node`
+##### Classe `core.DataNode`
 
 | Argumento | Tipo                                   | Descrição  |
 | ----------| -------------------------------------- | ---------- |
@@ -20,7 +20,7 @@
 from corrente import core
 
 # criação do objeto - dados de exemplo, sugestão de uso
-node_01 = core.Node(unique_id = 1, payload = {'product':'corn','ammount':1500})
+node_01 = core.DataNode(unique_id = 1, payload = {'product':'corn','ammount':1500})
 
 
 ##  teste de atributos e métodos

@@ -92,8 +92,13 @@ class JsonObject(DataObject):
         ).encode('utf-8')
 
 
-class Node:
-    def __init__(self, 
+
+class Node():
+    pass
+
+
+class DataNode(Node):
+    def __init__(self,
             unique_id: int,
             payload: Dict,
             attachments: List = None,
