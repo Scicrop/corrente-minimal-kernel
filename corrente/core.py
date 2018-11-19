@@ -228,7 +228,8 @@ class DataNode(Node):
 
 
 class TransactionNode(Node):
-    def __init__(self, source_node_hash_chain: bytes, target_node_hash_chain: bytes):
+    def __init__(self, transaction_type: str, source_node_hash_chain: bytes, target_node_hash_chain: bytes):
+        self.transaction_type = transaction_type
         self.source_node_hash_chain = source_node_hash_chain
         self.target_node_hash_chain = target_node_hash_chain
         # processed data
@@ -247,8 +248,10 @@ class TransactionNode(Node):
         utc_now = datetime.now(timezone.utc)
         self.timestamp = utc_now
         timestamp_hash = TimeDateObject(utc_now).hash().make_playload()
+        transaction_type_hash = StringObject(self.transaction_type).hash().make_playload()
         hash_set = (
             timestamp_hash,
+            transaction_type_hash,
             self.source_node_hash_chain,
             self.target_node_hash_chain,
             self.source_signature,

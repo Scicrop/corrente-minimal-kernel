@@ -18,6 +18,7 @@ def test_node_transction_simple():
     with freeze_time(datetime(2018,6,1,9,2, tzinfo=timezone.utc)):
         node_transporter.process_hash_chain()
     transaction_transport = core.TransactionNode(
+        'TRANSPORT',
         node_producer.hash_chain__object.make_playload(),
         node_transporter.hash_chain__object.make_playload(),
     )
