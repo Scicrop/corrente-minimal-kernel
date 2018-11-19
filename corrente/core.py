@@ -225,3 +225,35 @@ class DataNode(Node):
         #
         # return as bytes
         return mult.as_bytes()
+
+
+class TransactionNode(Node):
+    def __init__(self, source_node_hash_chain: bytes, target_node_hash_chain: bytes):
+        self.source_node_hash_chain = source_node_hash_chain
+        self.target_node_hash_chain = target_node_hash_chain
+        # processed data
+        self.timestamp = None
+        self.source_signature = None
+        self.target_signature = None
+        self.hash_chain__object = None
+    
+    def process_source_signature(self, key: bytes = b'', method: str = 'sha256'): # TODO: private_key
+        self.source_signature = HASH_NULL
+    
+    def process_target_signature(self, key: bytes = b'', method: str = 'sha256'): # TODO: private_key
+        self.target_signature = HASH_NULL
+    
+    def process_hash_chain(self):
+        utc_now = datetime.now(timezone.utc)
+        self.timestamp = utc_now
+        timestamp_hash = TimeDateObject(utc_now).hash().make_playload()
+        hash_set = (
+            timestamp_hash,
+            self.source_node_hash_chain,
+            self.target_node_hash_chain,
+            self.source_signature,
+            self.target_signature)
+        hash_joined = b''.join(hash_set)
+        data_object = DataObject(hash_joined)
+        self.hash_chain__object = data_object.hash()
+        return self.hash_chain__object
