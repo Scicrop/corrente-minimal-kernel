@@ -5,10 +5,7 @@ from freezegun import freeze_time
 from corrente import core
 
 
-def test_node_transction_simple():
-    
-    # create 3 nodes
-    
+def test_node_transaction_simple():
     
     # connect producer node with transporter node
     node_producer = core.DataNode(2743, {'product': 'corn', 'ammount': 1500})
