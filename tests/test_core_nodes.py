@@ -51,11 +51,7 @@ def test_node_transaction_simple():
         transaction_transport_target.process_hash_chain()
     
     # connect source transport node with target transport node
-<<<<<<< HEAD
     transaction_transport_closure = core.TransactionNode(
-=======
-    transaction_transport_target = core.TransactionNode(
->>>>>>> 93d96f91ca93da3f09ff14ba6694451131fd2d3d
         'TRANSPORT-CLOSURE',
         transaction_transport_source.hash_chain__object.make_playload(),
         transaction_transport_target.hash_chain__object.make_playload(),
