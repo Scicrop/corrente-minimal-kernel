@@ -51,7 +51,12 @@ def test_node_transaction_simple():
         transaction_transport_target.process_hash_chain()
     
     # connect source transport node with target transport node
-    
+    transaction_transport_closure = core.TransactionNode(
+        'TRANSPORT-CLOSURE',
+        transaction_transport_source.hash_chain__object.make_playload(),
+        transaction_transport_target.hash_chain__object.make_playload(),
+    )
+    # todo: define what will happen next, if some signature will be made or other thing to register two transaction nodes together
     
     # connect consumer node with producer node by sale Transaction node
     
