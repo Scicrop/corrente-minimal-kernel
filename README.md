@@ -1,5 +1,5 @@
 ![alt text](https://github.com/Compplied/corrente-commons/raw/master/dist/logo.png "Logo Corrente")
-# Corrente Blockchain
+# Microkernel Corrente Blockchain
 
 ## API
 
